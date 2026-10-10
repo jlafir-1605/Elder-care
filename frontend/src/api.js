@@ -1,8 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
-})
+baseURL: 'https://eldercare-backend-y085.onrender.com/api', })
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
