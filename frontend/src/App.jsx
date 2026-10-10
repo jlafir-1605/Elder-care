@@ -2,16 +2,27 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './auth/AuthContext'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import Home from './pages/Home'
+import Dashboard from './pages/Dashboard'
 
-function ProtectedRoute() {
-  const { token } = useAuth()
-  return token ? <Home /> : <Navigate to="/login" replace />
+function ProtectedRoute({ role }) {
+  const { token, user } = useAuth()
+
+  if (!token) return <Navigate to="/login" replace />
+  if (user && user.role !== role) {
+    return <Navigate to={user.role === 1 ? '/recruiter' : '/customer'} replace />
+  }
+
+  return <Dashboard />
 }
 
 function PublicOnlyRoute({ children }) {
-  const { token } = useAuth()
-  return token ? <Navigate to="/" replace /> : children
+  const { token, user } = useAuth()
+
+  if (token) {
+    return <Navigate to={user?.role === 2 ? '/customer' : '/recruiter'} replace />
+  }
+
+  return children
 }
 
 export default function App() {
@@ -33,7 +44,9 @@ export default function App() {
           </PublicOnlyRoute>
         }
       />
-      <Route path="/" element={<ProtectedRoute />} />
+      <Route path="/" element={<Navigate to="/recruiter" replace />} />
+      <Route path="/recruiter" element={<ProtectedRoute role={1} />} />
+      <Route path="/customer" element={<ProtectedRoute role={2} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

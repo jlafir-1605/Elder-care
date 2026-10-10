@@ -226,3 +226,5 @@ node_modules/
 frontend/dist/
 frontend/vite.config.ts.timestamp-*
 npm-debug.log*
+
+app_backup_before_features/
